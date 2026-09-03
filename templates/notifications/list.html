@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Notifications & In-App Alerts</h1>
+    <div class="breadcrumbs">Stay updated on approvals, payroll runs, SLA alerts, and system notices.</div>
+  </div>
+  {% if unread_count > 0 %}
+  <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-outline"><i class="fa-solid fa-check-double"></i> Mark All as Read</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Type</th><th>Title</th><th>Message</th><th>Timestamp</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for n in notifications %}
+          <tr style="{% if not n.is_read %}background: #eff6ff; font-weight: 600;{% endif %}">
+            <td><span class="badge badge-primary">{{ n.get_notification_type_display }}</span></td>
+            <td>{{ n.title }}</td>
+            <td style="color: #475569; font-weight: normal;">{{ n.message }}</td>
+            <td style="font-size: 0.8rem; color: #64748b; font-weight: normal;">{{ n.created_at|date:'M d, H:i' }}</td>
+            <td>
+              {% if not n.is_read %}
+              <a href="{% url 'notifications:mark_read' n.id %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-arrow-right"></i> Open</a>
+              {% else %}
+              <span style="color: #94a3b8; font-size: 0.8rem;">Read</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">No notifications in your inbox.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

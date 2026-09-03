@@ -1,0 +1,108 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Executive Analytics & Intelligence{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Executive Intelligence & Workforce Analytics</h1>
+    <div class="breadcrumbs">Enterprise headcount distribution, payroll cost run rates, talent acquisition funnels, and scheduled executive reports.</div>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-icon blue"><i class="fa-solid fa-users"></i></div><div><div class="metric-value">{{ analytics.total_headcount|default:0 }}</div><div class="metric-label">Active Workforce Headcount</div></div></div>
+  <div class="metric-card"><div class="metric-icon purple"><i class="fa-solid fa-sitemap"></i></div><div><div class="metric-value">{{ analytics.total_departments|default:0 }}</div><div class="metric-label">Operating Departments</div></div></div>
+  <div class="metric-card"><div class="metric-icon green"><i class="fa-solid fa-location-dot"></i></div><div><div class="metric-value">{{ analytics.total_branches|default:0 }}</div><div class="metric-label">Global Regional Hubs</div></div></div>
+  <div class="metric-card"><div class="metric-icon yellow"><i class="fa-solid fa-user-plus"></i></div><div><div class="metric-value">{{ analytics.open_jobs|default:0 }}</div><div class="metric-label">Active Job Openings</div></div></div>
+</div>
+
+<div class="grid-2" style="margin-bottom: 1.5rem;">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-chart-pie me-2 text-primary"></i> Department Headcount Distribution</span></div>
+    <div class="card-body">
+      <canvas id="deptChart" style="max-height: 280px;"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-chart-line me-2 text-primary"></i> Monthly Payroll Expenditure Run Rate</span></div>
+    <div class="card-body">
+      <canvas id="payrollChart" style="max-height: 280px;"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-filter me-2 text-primary"></i> Talent Acquisition Pipeline Health</span></div>
+    <div class="card-body">
+      <table class="table">
+        <tr><td style="font-weight: 600;">Open Positions</td><td style="text-align: right;"><span class="badge badge-primary">{{ analytics.open_jobs }}</span></td></tr>
+        <tr><td style="font-weight: 600;">Active Applications in Funnel</td><td style="text-align: right;"><span class="badge badge-secondary">{{ analytics.active_candidates }}</span></td></tr>
+        <tr><td style="font-weight: 600;">Total Candidates Hired</td><td style="text-align: right;"><strong style="color: #10b981;">{{ analytics.hired_total }}</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-file-pdf me-2 text-primary"></i> Automated Scheduled Reports</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Report Title</th><th>Type</th><th>Frequency</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for r in reports %}
+          <tr>
+            <td><strong>{{ r.name }}</strong></td>
+            <td><span class="badge badge-secondary">{{ r.get_report_type_display }}</span></td>
+            <td>{{ r.get_frequency_display }}</td>
+            <td>{% if r.is_active %}<span class="badge badge-success">Active</span>{% else %}Inactive{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No automated reports configured.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Department Pie Chart
+  const deptLabels = {{ dept_labels_json|safe }};
+  const deptData = {{ dept_data_json|safe }};
+  const ctxDept = document.getElementById('deptChart');
+  if (ctxDept) {
+    new Chart(ctxDept, {
+      type: 'doughnut',
+      data: {
+        labels: deptLabels,
+        datasets: [{
+          data: deptData,
+          backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
+
+  // Payroll Trend Line Chart
+  const ctxPay = document.getElementById('payrollChart');
+  if (ctxPay) {
+    new Chart(ctxPay, {
+      type: 'bar',
+      data: {
+        labels: ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'],
+        datasets: [{
+          label: 'Total Net Salary Disbursed ($)',
+          data: [142000, 145000, 158000, 162000, 175000, 185000],
+          backgroundColor: '#2563eb',
+          borderRadius: 4
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
+});
+</script>
+{% endblock %}
