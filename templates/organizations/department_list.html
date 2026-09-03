@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Departments</h1>
+    <div class="breadcrumbs">Organizational divisions, cost centers, and departmental leadership.</div>
+  </div>
+  <a href="{% url 'organizations:department_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Department</a>
+</div>
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Department Name</th><th>Code</th><th>Cost Center</th><th>Head of Dept</th><th>Staff Count</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for d in departments %}
+          <tr>
+            <td><strong>{{ d.name }}</strong></td>
+            <td><code>{{ d.code }}</code></td>
+            <td>{{ d.cost_center|default:'-' }}</td>
+            <td>{{ d.head.get_full_name|default:'Unassigned' }}</td>
+            <td><span class="badge badge-secondary">{{ d.employees.count }} members</span></td>
+            <td>{{ d.is_active|yesno:'Active,Inactive'|status_badge }}</td>
+            <td><a href="{% url 'organizations:department_update' d.id %}" class="btn btn-outline btn-sm">Edit</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 1.5rem;">No departments configured yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

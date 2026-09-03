@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Job Designations{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Job Designations & Titles</h1>
+    <div class="breadcrumbs">Standardized enterprise job titles, bands, and functional departments.</div>
+  </div>
+  <a href="{% url 'organizations:designation_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Designation</a>
+</div>
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Designation Title</th><th>Code</th><th>Department</th><th>Job Level</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for des in designations %}
+          <tr>
+            <td><strong>{{ des.title }}</strong></td>
+            <td><code>{{ des.code }}</code></td>
+            <td>{{ des.department.name|default:'Cross-functional' }}</td>
+            <td>{% if des.level %}<span class="badge badge-primary">{{ des.level.name }} (Rank {{ des.level.rank }})</span>{% else %}-{% endif %}</td>
+            <td>{{ des.is_active|yesno:'Active,Inactive'|status_badge }}</td>
+            <td><a href="{% url 'organizations:designation_update' des.id %}" class="btn btn-outline btn-sm">Edit</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 1.5rem;">No designations created yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

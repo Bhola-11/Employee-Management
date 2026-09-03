@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+{% block title %}Transition Employee Status{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Lifecycle Status Transition</h1>
+    <div class="breadcrumbs">Employee: <strong>{{ employee.full_name }}</strong> (Current: <code>{{ employee.employment_status }}</code>)</div>
+  </div>
+  <a href="{% url 'employees:detail' employee.id %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
+</div>
+<div class="card" style="max-width: 650px;">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">{{ field.errors|striptags }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrows-rotate"></i> Confirm Transition</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

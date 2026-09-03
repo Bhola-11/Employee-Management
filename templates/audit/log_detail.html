@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Audit Log #{{ log.id }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Audit Event #{{ log.id }}</h1>
+    <div class="breadcrumbs">Event details, security context, and field-level diffs.</div>
+  </div>
+  <a href="{% url 'audit:log_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Audit Trail</a>
+</div>
+<div class="card" style="max-width: 750px;">
+  <div class="card-header"><span><i class="fa-solid fa-shield me-2 text-primary"></i> Event Payload & Context</span> {{ log.action_type|status_badge }}</div>
+  <div class="card-body">
+    <table class="table">
+      <tr><td style="font-weight: 600; width: 30%;">Module</td><td>{{ log.module_name|title }}</td></tr>
+      <tr><td style="font-weight: 600;">Target Record</td><td>{{ log.object_repr }} (<code>{{ log.object_id }}</code>)</td></tr>
+      <tr><td style="font-weight: 600;">Action Performed</td><td>{{ log.action_type }}</td></tr>
+      <tr><td style="font-weight: 600;">User / Actor</td><td>{{ log.user.get_full_name|default:'System Process' }}</td></tr>
+      <tr><td style="font-weight: 600;">IP Address</td><td><code>{{ log.ip_address }}</code></td></tr>
+      <tr><td style="font-weight: 600;">Timestamp</td><td>{{ log.created_at|date:'M d, Y H:i:s e' }}</td></tr>
+      <tr><td style="font-weight: 600;">Description</td><td>{{ log.description }}</td></tr>
+    </table>
+  </div>
+</div>
+{% endblock %}

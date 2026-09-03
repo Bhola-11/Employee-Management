@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ title }}</h1>
+    <div class="breadcrumbs">Configure physical office locations, geographical timezone, and contact information.</div>
+  </div>
+  <a href="{% url 'organizations:branch_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Branches</a>
+</div>
+<div class="card" style="max-width: 750px;">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid-2">
+        {% for field in form %}
+        <div class="form-group">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">{{ field.errors|striptags }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Branch</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

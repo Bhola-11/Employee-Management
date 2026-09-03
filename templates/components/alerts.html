@@ -1,0 +1,10 @@
+{% if messages %}
+<div style="padding: 1rem 1.75rem 0;">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible" style="padding: 0.85rem 1.25rem; border-radius: var(--radius); margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; {% if message.tags == 'success' %}background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0;{% elif message.tags == 'error' or message.tags == 'danger' %}background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca;{% elif message.tags == 'warning' %}background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a;{% else %}background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;{% endif %}">
+    <div>{{ message }}</div>
+    <button type="button" onclick="this.parentElement.remove();" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: inherit;">&times;</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

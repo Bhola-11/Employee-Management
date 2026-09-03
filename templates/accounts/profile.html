@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+{% block title %}My Account & Security{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">User Profile & Security Settings</h1>
+    <div class="breadcrumbs">Manage your personal account settings, theme preferences, and active role assignments.</div>
+  </div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-user-gear me-2 text-primary"></i> Account Details</span></div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group"><label class="form-label">First Name</label>{{ form.first_name }}</div>
+        <div class="form-group"><label class="form-label">Last Name</label>{{ form.last_name }}</div>
+        <div class="form-group"><label class="form-label">Phone</label>{{ form.phone }}</div>
+        <div class="form-group"><label class="form-label">Profile Avatar</label>{{ form.avatar }}</div>
+        <div class="form-group"><label class="form-label">Preferred Language</label>{{ form.preferred_language }}</div>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Profile</button>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-header"><span><i class="fa-solid fa-id-card-clip me-2 text-primary"></i> Assigned Roles</span></div>
+      <div class="card-body">
+        {% for a in roles %}
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px solid #e2e8f0;">
+          <div>
+            <strong>{{ a.role.name }}</strong> (<code>{{ a.role.code }}</code>)
+            <div style="font-size: 0.75rem; color: #64748b;">Organization: {{ a.organization.name }}</div>
+          </div>
+          {% if a.is_primary %}<span class="badge badge-primary">Primary Role</span>{%{ endif %}
+        </div>
+        {% empty %}
+        <p style="color: #64748b;">Super Admin account</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span><i class="fa-solid fa-clock me-2 text-primary"></i> Recent Login Sessions</span></div>
+      <div class="card-body" style="padding: 0;">
+        <table class="table">
+          <thead><tr><th>IP Address</th><th>Login Time</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for s in sessions %}
+            <tr>
+              <td><code>{{ s.ip_address }}</code></td>
+              <td>{{ s.login_time|date:'M d, Y H:i' }}</td>
+              <td>{u if s.is_active %}<span class="badge badge-success">Active</span>{%{ else %}<span class="badge badge-secondary">Closed</span>{%{ endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" style="text-align: center; color: #64748b;">No past sessions found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

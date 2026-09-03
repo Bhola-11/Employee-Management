@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}{{ employee.full_name }} - Profile{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ employee.full_name }} (<code>{{ employee.employee_id }}</code>)</h1>
+    <div class="breadcrumbs">{{ employee.designation.title|default:'Designation Unassigned' }} • {{ employee.department.name|default:'Department Unassigned' }} • {{ employee.branch.name }}</div>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{% url 'employees:edit' employee.id %}" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</a>
+    <a href="{% url 'employees:lifecycle_transition' employee.id %}" class="btn btn-outline"><i class="fa-solid fa-arrows-rotate"></i> Transition Status</a>
+  </div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-id-card me-2 text-primary"></i> Primary Information</span> {{ employee.employment_status|status_badge }}</div>
+    <div class="card-body">
+      <table class="table">
+        <tr><td style="font-weight: 600; width: 35%;">Work Email</td><td>{{ employee.work_email }}</td></tr>
+        <tr><td style="font-weight: 600;">Phone</td><td>{{ employee.phone_number|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Date of Joining</td><td>{{ employee.date_of_joining|date:'M d, Y' }} ({{ employee.tenure_years }} years)</td></tr>
+        <tr><td style="font-weight: 600;">Reports To</td><td>{% if employee.reports_to %}<a href="{% url 'employees:detail' employee.reports_to.id %}">{{ employee.reports_to.full_name }}</a>{% else %}Executive / Top-Level{% endif %}</td></tr>
+        <tr><td style="font-weight: 600;">Employment Type</td><td>{{ employee.employment_type.name|default:'Standard' }}</td></tr>
+        <tr><td style="font-weight: 600;">Base Salary</td><td><strong>{{ employee.base_salary|currency:employee.organization.currency }}</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-header"><span><i class="fa-solid fa-timeline me-2 text-primary"></i> Lifecycle Transition History</span></div>
+      <div class="card-body" style="padding: 0;">
+        <table class="table">
+          <thead><tr><th>Transition</th><th>Effective Date</th><th>Reason</th></tr></thead>
+          <tbody>
+            {% for t in transitions %}
+            <tr>
+              <td>{{ t.from_status }} → <strong>{{ t.to_status }}</strong></td>
+              <td>{{ t.effective_date|date:'M d, Y' }}</td>
+              <td style="font-size: 0.8rem; color: #64748b;">{{ t.reason|truncatechars:30 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 1rem;">Initial creation state.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

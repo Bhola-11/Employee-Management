@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% block title %}User Management & Access{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Users & Role Assignments</h1>
+    <div class="breadcrumbs">Manage system credentials, administrator privileges, and assigned workforce roles.</div>
+  </div>
+  <a href="{% url 'accounts:user_create' %}" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add New User</a>
+</div>
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>User</th><th>Email</th><th>Active Role</th><th>Assigned Roles</th><th>Org Admin</th><th>Last Active</th></tr></thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td><div style="font-weight: 600;">{{ u.get_full_name|default:u.email }}</div></td>
+            <td>{{ u.email }}</td>
+            <td>
+              {% if u.active_role %}<span class="badge badge-primary">{{ u.active_role.name }}</span>
+              {% elif u.is_superuser %}<span class="badge badge-primary">Super Admin</span>
+              {% else %}<span class="badge badge-secondary">Standard</span>{% endif %}
+            </td>
+            <td>
+              {% for assign in u.role_assignments.all %}<span class="badge badge-secondary me-1">{{ assign.role.name }}</span>
+              {% empty %}<span style="font-size: 0.75rem; color: #64748b;">Inherited / Default</span>{% endfor %}
+            </td>
+            <td>{% if u.is_org_admin or u.is_superuser %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+            <td style="font-size: 0.8rem; color: #64748b;">{{ u.last_activity|date:'M d, Y H:i'|default:'Never' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% include 'components/pagination.html' %}
+{% endblock %}

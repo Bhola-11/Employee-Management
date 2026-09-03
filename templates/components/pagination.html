@@ -1,0 +1,22 @@
+{% if page_obj.has_other_pages %}
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1.25rem;">
+  <div style="font-size: 0.85rem; color: var(--text-muted);">
+    Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ page_obj.paginator.count }} total records)
+  </div>
+  <div style="display: flex; gap: 0.35rem;">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline btn-sm"><i class="fa-solid fa-chevron-left"></i> Previous</a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <span class="btn btn-primary btn-sm">{{ num }}</span>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a href="?page={{ num }}" class="btn btn-outline btn-sm">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline btn-sm">Next <i class="fa-solid fa-chevron-right"></i></a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

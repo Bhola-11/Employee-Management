@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Compliance & Audit Trail{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">System Audit & Compliance Trail</h1>
+    <div class="breadcrumbs">Immutable log of security events, data mutations, and workforce operations.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Action</th><th>Module</th><th>Record</th><th>Actor</th><th>IP Address</th><th>Timestamp</th><th>Details</th></tr></thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td>{{ log.action_type|status_badge }}</td>
+            <td><strong>{{ log.module_name|title }}</strong></td>
+            <td>{{ log.object_repr }}</td>
+            <td>{{ log.user.get_short_name|default:'System' }}</td>
+            <td><code>{{ log.ip_address|default:'127.0.0.1' }}</code></td>
+            <td style="font-size: 0.8rem; color: #64748b;">{{ log.created_at|date:'M d, Y H:i:s' }}</td>
+            <td><a href="{% url 'audit:log_detail' log.id %}" class="btn btn-outline btn-sm">View</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 2rem;">No audit trail records found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% include 'components/pagination.html' %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+{% block title %}Organizational Chart{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Organizational Hierarchy Chart</h1>
+    <div class="breadcrumbs">Vidualize reporting lines, executive leadership, and departmental teams.</div>
+  </div>
+  <a href="{% url 'employees:directory' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Directory</a>
+</div>
+<div class="card">
+  <div class="card-body" style="overflow-x: auto; padding: 2rem;">
+    <ul class="org-tree" style="list-style: none; padding-left: 0;">
+      {% for node in tree %}
+        {% include 'employees/tree_node.html' with item=node %}
+      {% empty %}
+        <li style="color: #64748b;">No reporting tree data available.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+{% block title %}13 Roles RBAC Matrix{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Role-Based Access Control (13 Roles Matrix)</h1>
+    <div class="breadcrumbs">Enterprise security governance mapping capabilities across all 13 standard organizational roles.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><span><i class="fa-solid fa-shield-halved me-2 text-primary"></i> Configured Platform Roles</span></div>
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>#</th><th>Role Name</th><th>Role Code</th><th>System Default</th><th>Description & Scope</th></tr></thead>
+        <tbody>
+          {% for r in roles %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td style="font-weight: 600;">{{ r.name }}</td>
+            <td><code>{{ r.code }}</code></td>
+            <td><span class="badge badge-success">System Core</span></td>
+            <td style="color: #64748b; font-size: 0.85rem;">{{ r.description }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

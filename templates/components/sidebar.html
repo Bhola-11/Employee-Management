@@ -1,0 +1,108 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><i class="fa-solid fa-cube"></i></div>
+    <div class="sidebar-title">
+      <h3>WorkSphere</h3>
+      <small>HR & Workforce Platform</small>
+    </div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-category">EXECUTIVE INTELLIGENCE</div>
+    <a href="{% url 'core:dashboard' %}" class="menu-item {% if request.resolver_match.url_name == 'dashboard' and request.resolver_match.app_name == 'core' %}active{% endif %}">
+      <i class="fa-solid fa-gauge"></i><span>Executive Dashboard</span>
+    </a>
+    <a href="{% url 'analytics:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'analytics' %}active{% endif %}">
+      <i class="fa-solid fa-chart-pie"></i><span>Analytics & Reports</span>
+    </a>
+    <a href="{% url 'notifications:list' %}" class="menu-item {% if request.resolver_match.app_name == 'notifications' %}active{% endif %}">
+      <i class="fa-solid fa-bell"></i><span>Notifications Hub</span>
+    </a>
+
+    <div class="menu-category">ORGANIZATION & TEAMS</div>
+    <a href="{% url 'organizations:detail' %}" class="menu-item {% if request.resolver_match.app_name == 'organizations' and request.resolver_match.url_name == 'detail' %}active{% endif %}">
+      <i class="fa-solid fa-building"></i><span>Organization Profile</span>
+    </a>
+    <a href="{% url 'organizations:department_list' %}" class="menu-item {% if 'department' in request.resolver_match.url_name %}active{% endif %}">
+      <i class="fa-solid fa-sitemap"></i><span>Departments</span>
+    </a>
+    <a href="{% url 'organizations:branch_list' %}" class="menu-item {% if 'branch' in request.resolver_match.url_name %}active{% endif %}">
+      <i class="fa-solid fa-location-dot"></i><span>Branches & Locations</span>
+    </a>
+    <a href="{% url 'organizations:designation_list' %}" class="menu-item {% if 'designation' in request.resolver_match.url_name %}active{% endif %}">
+      <i class="fa-solid fa-id-badge"></i><span>Job Designations</span>
+    </a>
+
+    <div class="menu-category">WORKFORCE DIRECTORY</div>
+    <a href="{% url 'employees:directory' %}" class="menu-item {% if request.resolver_match.app_name == 'employees' and request.resolver_match.url_name == 'directory' %}active{% endif %}">
+      <i class="fa-solid fa-users"></i><span>Employee Directory</span>
+    </a>
+    <a href="{% url 'employees:org_chart' %}" class="menu-item {% if request.resolver_match.url_name == 'org_chart' %}active{% endif %}">
+      <i class="fa-solid fa-diagram-project"></i><span>Organization Hierarchy</span>
+    </a>
+
+    <div class="menu-category">TALENT & TIME (PHASE 2)</div>
+    <a href="{% url 'recruitment:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'recruitment' %}active{% endif %}">
+      <i class="fa-solid fa-user-plus"></i><span>Recruitment & ATS</span>
+    </a>
+    <a href="{% url 'onboarding:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'onboarding' %}active{% endif %}">
+      <i class="fa-solid fa-list-check"></i><span>Onboarding & Exit</span>
+    </a>
+    <a href="{% url 'attendance:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'attendance' %}active{% endif %}">
+      <i class="fa-solid fa-clock"></i><span>Attendance & Punches</span>
+    </a>
+    <a href="{% url 'shifts:roster' %}" class="menu-item {% if request.resolver_match.app_name == 'shifts' %}active{% endif %}">
+      <i class="fa-solid fa-calendar-days"></i><span>Shifts & Rostering</span>
+    </a>
+    <a href="{% url 'leave_management:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'leave_management' %}active{% endif %}">
+      <i class="fa-solid fa-plane-departure"></i><span>Leave & Time Off</span>
+    </a>
+    <a href="{% url 'holidays:calendar' %}" class="menu-item {% if request.resolver_match.app_name == 'holidays' %}active{% endif %}">
+      <i class="fa-solid fa-calendar-check"></i><span>Holiday Calendar</span>
+    </a>
+
+    <div class="menu-category">FINANCIAL ENGINE (PHASE 3)</div>
+    <a href="{% url 'payroll:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'payroll' %}active{% endif %}">
+      <i class="fa-solid fa-money-bill-wave"></i><span>Payroll & Payslips</span>
+    </a>
+    <a href="{% url 'compensation:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'compensation' %}active{% endif %}">
+      <i class="fa-solid fa-layer-group"></i><span>Compensation Bands</span>
+    </a>
+    <a href="{% url 'benefits:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'benefits' %}active{% endif %}">
+      <i class="fa-solid fa-heart-pulse"></i><span>Benefits Administration</span>
+    </a>
+    <a href="{% url 'expenses:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'expenses' %}active{% endif %}">
+      <i class="fa-solid fa-receipt"></i><span>Expense Claims</span>
+    </a>
+    <a href="{% url 'travel:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'travel' %}active{% endif %}">
+      <i class="fa-solid fa-plane"></i><span>Corporate Travel</span>
+    </a>
+
+    <div class="menu-category">GOVERNANCE & TALENT (PHASE 4)</div>
+    <a href="{% url 'performance:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'performance' %}active{% endif %}">
+      <i class="fa-solid fa-bullseye"></i><span>Performance & OKRs</span>
+    </a>
+    <a href="{% url 'learning:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'learning' %}active{% endif %}">
+      <i class="fa-solid fa-graduation-cap"></i><span>Training LMS</span>
+    </a>
+    <a href="{% url 'assets:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'assets' %}active{% endif %}">
+      <i class="fa-solid fa-laptop"></i><span>IT Hardware Assets</span>
+    </a>
+    <a href="{% url 'documents:vault' %}" class="menu-item {% if request.resolver_match.app_name == 'documents' %}active{% endif %}">
+      <i class="fa-solid fa-vault"></i><span>Documents & Policies</span>
+    </a>
+    <a href="{% url 'helpdesk:dashboard' %}" class="menu-item {% if request.resolver_match.app_name == 'helpdesk' %}active{% endif %}">
+      <i class="fa-solid fa-headset"></i><span>HR & IT Helpdesk</span>
+    </a>
+
+    <div class="menu-category">SECURITY & AUDIT</div>
+    <a href="{% url 'accounts:user_list' %}" class="menu-item {% if request.resolver_match.app_name == 'accounts' and request.resolver_match.url_name == 'user_list' %}active{% endif %}">
+      <i class="fa-solid fa-users-gear"></i><span>User Accounts</span>
+    </a>
+    <a href="{% url 'accounts:roles_matrix' %}" class="menu-item {% if request.resolver_match.url_name == 'roles_matrix' %}active{% endif %}">
+      <i class="fa-solid fa-shield-halved"></i><span>13 RBAC Roles</span>
+    </a>
+    <a href="{% url 'audit:log_list' %}" class="menu-item {% if request.resolver_match.app_name == 'audit' %}active{% endif %}">
+      <i class="fa-solid fa-clock-rotate-left"></i><span>Compliance Audit Trail</span>
+    </a>
+  </div>
+</aside>

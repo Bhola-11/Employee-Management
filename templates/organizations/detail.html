@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Organization Profile{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ org.name }} ({{ org.code }})</h1>
+    <div class="breadcrumbs">Tenant profile, headquarters, fiscal configurations, and operational hierarchy.</div>
+  </div>
+  <a href="{% url 'organizations:settings' %}" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> Edit Settings</a>
+</div>
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-icon blue"><i class="fa-solid fa-building-user"></i></div><div><div class="metric-value">{{ overview.total_depts }}</div><div class="metric-label">Departments</div></div></div>
+  <div class="metric-card"><div class="metric-icon green"><i class="fa-solid fa-location-dot"></i></div><div><div class="metric-value">{{ overview.total_branches }}</div><div class="metric-label">Branches & Locations</div></div></div>
+  <div class="metric-card"><div class="metric-icon purple"><i class="fa-solid fa-money-bill-wave"></i></div><div><div class="metric-value">{{ org.currency }}</div><div class="metric-label">Base Currency</div></div></div>
+  <div class="metric-card"><div class="metric-icon yellow"><i class="fa-solid fa-globe"></i></div><div><div class="metric-value">{{ org.timezone }}</div><div class="metric-label">Primary Timezone</div></div></div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-circle-info me-2 text-primary"></i> Corporate Information</span></div>
+    <div class="card-body">
+      <table class="table">
+        <tr><td style="font-weight: 600; width: 35%;">Domain</td><td>{{ org.domain|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Industry</td><td>{{ org.industry }}</td></tr>
+        <tr><td style="font-weight: 600;">Tax ID / EIN</td><td>{{ org.tax_id|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Registration Number</td><td>{{ org.registration_number|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Work Email</td><td>{{ org.email|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Phone</td><td>{{ org.phone|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Website</td><td><a href="{{ org.website }}" target="_blank">{{ org.website|default:'-' }}</a></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-sliders me-2 text-primary"></i> Regional & Localization Parameters</span></div>
+    <div class="card-body">
+      <table class="table">
+        <tr><td style="font-weight: 600; width: 35%;">Date Format</td><td><code>{{ org.date_format }}</code></td></tr>
+        <tr><td style="font-weight: 600;">Fiscal Year Start</td><td>Month {{ org.fiscal_year_start }} (January)</td></tr>
+        <tr><td style="font-weight: 600;">Headcount Capacity</td><td>{{ org.max_employees }} employees</td></tr>
+        <tr><td style="font-weight: 600;">Tenant Status</td><td>{{ org.is_active|yesno:'Active,Inactive'|status_badge }}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

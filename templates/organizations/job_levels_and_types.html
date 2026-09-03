@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+{% block title %}Job Levels & Employment Types{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Job Levels & Employment Types</h1>
+    <div class="breadcrumbs">Seniority banding, rankings, and contractual employment categories.</div>
+  </div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-layer-group me-2 text-primary"></i> Job Levels (Seniority Bands)</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Rank</th><th>Level Name</th><th>Code</th></tr></thead>
+        <tbody>
+          {% for l in levels %}
+          <tr>
+            <td><span class="badge badge-primary">Band {{ l.rank }}</span></td>
+            <td><strong>{{ l.name }}</strong></td>
+            <td><code>{{ l.code }}</code></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 1.5rem;">No levels defined.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-briefcase me-2 text-primary"></i> Employment Types</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Type Name</th><th>Code</th><th>Full Time</th></tr>
+        <tbody>
+          {% for t in types %}
+          <tr>
+            <td><strong>{{ t.name }}</strong></td>
+            <td><code>{{ t.code }}</code></td>
+            <td>{% if t.is_full_time %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 1.5rem;">No employment types defined.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

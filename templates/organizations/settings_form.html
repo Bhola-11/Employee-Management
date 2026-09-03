@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% block title %}Organization Settings{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Tenant & Organization Settings</h1>
+    <div class="breadcrumbs">Configure branding, fiscal defaults, working hours, and compliance settings.</div>
+  </div>
+  <a href="{% url 'organizations:detail' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Profile</a>
+</div>
+<div class="card" style="max-width: 800px;">
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="grid-2">
+        {% for field in form %}
+        <div class="form-group">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">{{ field.errors|striptags }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Organization Settings</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

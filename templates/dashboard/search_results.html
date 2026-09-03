@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% block title %}Search Results for "{{ query }}"{%{ endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Search Results</h1>
+    <div class="breadcrumbs">Query: "<strong>{{ query }}</strong>"</div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><span><i class="fa-solid fa-users me-2 text-primary"></i> Matching Employees</span></div>
+  <div class="card-body" style="padding: 0;">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Employee ID</th><th>Designation</th><th>Department</th></tr></thead>
+      <tbody>
+        {% for emp in results.employees %}
+        <tr>
+          <td><a href="{% url 'employees:detail' emp.id %}" style="font-weight: 600;">{{ emp.name }}</a></td>
+          <td><code>{{ emp.employee_id }}</code></td>
+          <td>{{ emp.designation }}</td>
+          <td>{{ emp.department }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No matching employee records.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

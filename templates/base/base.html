@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ request.session.dark_mode|yesno:'dark,light' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ page_title|default:'WorkSphere' }}{% endblock %} | WorkSphere HRMS</title>
+  <!-- Google Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- WorkSphere Custom Design Tokens & CSS -->
+  <link rel="stylesheet" href="{% static 'css/worksphere.css' %}">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% if user.is_authenticated %}
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    {% include 'components/sidebar.html' %}
+
+    <!-- Main Application Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Navbar -->
+      {% include 'components/navbar.html' %}
+
+      <!-- Alerts & Messages -->
+      {% include 'components/alerts.html' %}
+
+      <!-- Page Content -->
+      <main class="content-area">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  {% else %}
+  <div class="auth-container">
+    {% include 'components/alerts.html' %}
+    {% block auth_content %}{% endblock %}
+  </div>
+  {% endif %}
+
+  <!-- Core JavaScript -->
+  <script src="{% static 'js/worksphere.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,129 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Enterprise Dashboard{% endblock %}
+
+{{ block content %}
+<Div class="page-header">
+  <div>
+    <h1 class="page-title">Workforce Operations & Executive Hub</h1>
+    <div class="breadcrumbs">Real-time metrics, staffing health, department distributions, and recent audit activity.</div>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{% url 'employees:create' %}" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add Employee</a>
+    <a href="{% url 'employees:org_chart' %}" class="btn btn-toutline"><i class="fa-solid fa-sitemap"></i> View Hierarchy</a>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-icon blue"><i class="fa-solid fa-users"></i></div>
+    <div>
+      <div class="metric-value">{{ total_employees|default:0 }}</div>
+      <div class="metric-label">Total Headcount</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-icon green"><i class="fa-solid fa-user-check"></i></div>
+    <div>
+      <div class="metric-value">{{ active_employees|default:0 }}</div>
+      <div class="metric-label">Active & Confirmed Staff</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-icon purple"><i class="fa-solid fa-building"></i></div>
+    <div>
+      <div class="metric-value">{{ departments_count|default:0 }}</div>
+      <div class="metric-label">Operational Departments</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-icon yellow"><i class="fa-solid fa-chart-pie"></i></div>
+    <div>
+      <div class="metric-value">{{ attendance_rate }}%</div>
+      <div class="metric-label">Average Monthly Attendance</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header">
+      <span><i class="fa-solid fa-chart-bar me-2 text-primary"></i> Headcount by Department</span>
+      <a href="{% url 'organizations:department_list' %}" class="btn btn-outline btn-sm">Manage</a>
+    </div>
+    <div class="card-body">
+      <canvas id="deptChart" height="180"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> Live Audit & System Stream</span>
+      <a href="{% url 'audit:log_list' %}" class="btn btn-outline btn-sm">View Full Trail</a>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Details</th>
+              <th>Actor</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in recent_activities %}
+            <tr>
+              <td>{{ log.action_type|status_badge }}</td>
+              <td>
+                <div style="font-weight: 500;">{{ log.module_name|title }}: {{ log.object_repr }}</div>
+                <div style="font-size: 0.75rem; color: #64748b;">{{ log.description|truncatechars:25 }}</div>
+              </td>
+              <td>{{ log.user.get_short_name|default:'System' }}</td>
+              <td style="font-size: 0.75rem; color: #64748b;">{{ log.created_at|timesince }} ago</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">
+                No recent activity logged yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; border: none;">
+  <div class="card-body" style="padding: 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">One Platform for Every Workforce</h3>
+      <p style="color: #94a3b8; font-size: 0.875rem;">WorkSphere multi-tenant architecture powers 13 distinct roles with automated lifecycle tracking and audit compliance.</p>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="{% url 'accounts:roles_matrix' %}" class="btn btn-primary" style="background-color: #2563eb;"><i class="fa-solid fa-shield-halved"></i> View 13 RBAC Roles</a>
+      <a href="{% url 'organizations:detail' %}" class="btn btn-secondary"><i class="fa-solid fa-sliders"></i> Org Settings</a>
+    </div>
+  </div>
+</div>
+{{ endblock %}
+
+{% block extra_js %}
+<script>
+  const deptData = {{ department_distribution|safe }};
+  const ctx = document.getElementById('deptChart');
+  if (ctx && deptData.length > 0) {
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: deptData.map(function(d) { return d.name; }),
+        datasets: [{ data: deptData.map(function(d) { return d.emp_count; }), backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899'] }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
+</script>
+{% endblock %}

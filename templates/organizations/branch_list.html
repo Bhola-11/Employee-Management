@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Branches & Locations{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Branches & Office Locations</h1>
+    <div class="breadcrumbs">Corporate headquarters, regional hubs, and satellite workspaces.</div>
+  </div>
+  <a href="{% url 'organizations:branch_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Branch</a>
+</div>
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Branch Name</th><th>Code</th><th>City / Country</th><th>Type</th><th>Headquarters</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for b in branches %}
+          <tr>
+            <td><strong>{{ b.name }}</strong></td>
+            <td><code>{{ b.code }}</code></td>
+            <td>{{ b.city }}, {{ b.country }}</td>
+            <td><span class="badge badge-primary">{{ b.branch_type|title }}</span></td>
+            <td>{% if b.is_headquarters %}<span class="badge badge-success">Headquarters</span>{% else %}-{% endif %}</td>
+            <td>{{ b.is_active|yesno:'Active,Inactive'|status_badge }}</td>
+            <td><a href="{% url 'organizations:branch_update' b.id %}" class="btn btn-outline btn-sm">Edit</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 1.5rem;">No branches configured yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
