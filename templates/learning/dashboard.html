@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+{% block title %}Training & LMS Academy{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">WorkSphere Learning Academy & LMS</h1>
+    <div class="breadcrumbs">Upskill your professional competencies with internal training programs and compliance courses.</div>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+  {% for c in courses %}
+  <div class="card" style="display: flex; flex-direction: column;">
+    <div style="height: 120px; background: linear-gradient(135deg, #1e293b, #334155); display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 3rem;">
+      <i class="fa-solid fa-graduation-cap"></i>
+    </div>
+    <div class="card-body" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span class="badge badge-secondary">{{ c.category }}</span>
+          <span style="font-size: 0.75rem; color: #64748b;">{{ c.duration_hours }} hrs</span>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: #0f172a;">{{ c.title }}</h3>
+        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin-bottom: 1rem;">{{ c.description|truncatewords:15 }}</p>
+      </div>
+      <a href="{% url 'learning:course_detail' c.id %}" class="btn btn-primary btn-sm" style="width: 100%; text-align: center;"><i class="fa-solid fa-play"></i> View Curriculum</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="card" style="grid-column: 1 / -1;"><div class="card-body"><p style="color: #64748b; margin: 0;">No active LMS training courses published.</p></div></div>
+  {% endfor %}
+</div>
+{% endblock %}
