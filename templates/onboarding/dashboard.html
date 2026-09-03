@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Onboarding & Offboarding{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Employee Onboarding & Exit Clearance</h1>
+    <div class="breadcrumbs">Track new hire readiness checklists, task completions, and departmental exit clearances.</div>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{% url 'onboarding:create' %}" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Initiate Onboarding</a>
+    <a href="{% url 'onboarding:offboarding_create' %}" class="btn btn-outline"><i class="fa-solid fa-door-open"></i> Initiate Offboarding</a>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-icon blue"><i class="fa-solid fa-spinner"></i></div><div><div class="metric-value">{{ in_progress_count|default:0 }}</div><div class="metric-label">In-Progress Onboardings</div></div></div>
+  <div class="metric-card"><div class="metric-icon green"><i class="fa-solid fa-circle-check"></i></div><div><div class="metric-value">{{ completed_count|default:0 }}</div><div class="metric-label">Completed This Month</div></div></div>
+  <div class="metric-card"><div class="metric-icon yellow"><i class="fa-solid fa-user-minus"></i></div><div><div class="metric-value">{{ active_exits|default:0 }}</div><div class="metric-label">Active Exit Clearances</div></div></div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-rocket me-2 text-primary"></i> Active New Hire Onboardings</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Start Date</th><th>Progress</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for ob in onboardings %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ ob.employee.full_name }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ ob.employee.designation.title }}</div></td>
+            <td>{{ ob.start_date|date:'M d, Y' }}</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                  <div style="width: {{ ob.completion_percentage }}%; height: 100%; background: #2563eb;"></div>
+                </div>
+                <span style="font-size: 0.75rem; font-weight: 600;">{{ ob.completion_percentage }}%</span>
+              </div>
+            </td>
+            <td><a href="{% url 'onboarding:detail' ob.id %}" class="btn btn-outline btn-sm">Tasks</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No active employee onboardings.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-arrow-right-from-bracket me-2 text-primary"></i> Exit & Offboarding Workflows</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Last Working Day</th><th>Status</th><th>Clearance</th></tr></thead>
+        <tbody>
+          {% for off in offboardings %}
+          <tr>
+            <td><strong style="color: #0f172a;">{{ off.employee.full_name }}</strong></td>
+            <td>{{ off.last_working_day|date:'M d, Y' }}</td>
+            <td><span class="badge badge-secondary">{{ off.get_status_display }}</span></td>
+            <td><a href="{% url 'onboarding:offboarding_detail' off.id %}" class="btn btn-outline btn-sm">Clearance</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No active exit workflows.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

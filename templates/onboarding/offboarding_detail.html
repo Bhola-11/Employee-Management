@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block title %}Exit Clearance: {{ offboarding.employee.full_name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Exit Clearance: {{ offboarding.employee.full_name }}</h1>
+    <div class="breadcrumbs">LWD: {{ offboarding.last_working_day|date:'M d, Y' }} • Reason: {{ offboarding.get_reason_display }}</div>
+  </div>
+  <a href="{% url 'onboarding:dashboard' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+</div>
+
+<div class="card">
+  <div class="card-header"><span><i class="fa-solid fa-shield-halved me-2 text-primary"></i> Department Clearances</span></div>
+  <div class="card-body" style="padding: 0;">
+    <table class="table">
+      <thead><tr><th>Department Item</th><th>Status</th><th>Recoverable Dues</th><th>Cleared By</th></tr></thead>
+      <tbody>
+        {% for c in clearances %}
+        <tr>
+          <td><strong>{{ c.get_department_display }}</strong></td>
+          <td>{% if c.status == 'APPROVED' %}<span class="badge badge-success">Cleared</span>{% else %}<span class="badge badge-warning">Pending</span>{% endif %}</td>
+          <td>${{ c.recoverable_amount }}</td>
+          <td>{{ c.cleared_by.full_name|default:'Awaiting Sign-off' }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No clearance items assigned.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block title %}Corporate Holiday Calendar{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Corporate Holiday Calendar (2026)</h1>
+    <div class="breadcrumbs">Official public holidays, regional branch closures, and observed company days.</div>
+  </div>
+  <a href="{% url 'holidays:create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Holiday</a>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <table class="table">
+      <thead><tr><th>Holiday Name</th><th>Date</th><th>Day</th><th>Branch / Scope</th><th>Type</th></tr></thead>
+      <tbody>
+        {% for h in holidays %}
+        <tr>
+          <td><strong>{{ h.name }}</strong></td>
+          <td><code>{{ h.date|date:'F d, Y' }}</code></td>
+          <td>{{ h.date|date:'l' }}</td>
+          <td>{% if h.branch %}<span class="badge badge-primary">{{ h.branch.name }}</span>{% else %}<span class="badge badge-success">All Branches (Global)</span>{% endif %}</td>
+          <td>{% if h.is_optional %}<span class="badge badge-secondary">Optional Floating</span>{% else %}<span class="badge badge-success">Mandatory Closed</span>{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">No holidays configured for the current year.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

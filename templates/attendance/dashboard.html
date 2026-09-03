@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Attendance & Punch Desk{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Attendance & Timesheet Operations</h1>
+    <div class="breadcrumbs">Daily clock-in/out timestamps, hours worked, late entry detection, and regularization requests.</div>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-bottom: 1.5rem;">
+  <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #ffffff; border: none;">
+    <div class="card-body" style="padding: 1.75rem;">
+      <h3 style="font-size: 1.1rem; color: #94a3b8; margin-bottom: 0.5rem;">TODAY'S SHIFT PUNCH ({{ today|date:'l, F d, Y' }})</h3>
+      <div style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">
+        {% if today_punch and today_punch.clock_in %}
+          {{ today_punch.clock_in|time:'H:i:s' }}
+          {% if today_punch.clock_out %} - {{ today_punch.clock_out|time:'H:i:s' }}{% endif %}
+        {% else %}
+          Not Clocked In
+        {% endif %}
+      </div>
+      
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        {% if not today_punch or not today_punch.clock_in %}
+          <a href="{% url 'attendance:clock_in' %}" class="btn btn-primary" style="background: #10b981; border: none; padding: 0.65rem 1.5rem;"><i class="fa-solid fa-right-to-bracket"></i> Clock In Now</a>
+        {% elif not today_punch.clock_out %}
+          <a href="{% url 'attendance:clock_out' %}" class="btn btn-primary" style="background: #ef4444; border: none; padding: 0.65rem 1.5rem;"><i class="fa-solid fa-right-from-bracket"></i> Clock Out</a>
+        {% else %}
+          <span class="badge badge-success" style="font-size: 0.9rem; padding: 0.5rem 1rem;"><i class="fa-solid fa-check-double"></i> Shift Completed ({{ today_punch.total_work_hours }} hrs)</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-calendar-day me-2 text-primary"></i> Attendance Status Today</span></div>
+    <div class="card-body">
+      {% if today_punch %}
+      <table class="table">
+        <tr><td style="font-weight: 600;">Status</td><td>{{ today_punch.status|status_badge }}</td></tr>
+        <tr><td style="font-weight: 600;">Clock In IP</td><td><code>{{ today_punch.clock_in_ip|default:'127.0.0.1' }}</code></td></tr>
+        <tr><td style="font-weight: 600;">Late Entry</td><td>{% if today_punch.is_late_entry %}<span class="badge badge-warning">Yes</span>{% else %}<span class="badge badge-success">On Time</span>{% endif %}</td></tr>
+        <tr><td style="font-weight: 600;">Total Hours</td><td><strong>{{ today_punch.total_work_hours }} hrs</strong></td></tr>
+      </table>
+      {% else %}
+      <p style="color: #64748b; padding: 1rem 0;">No punch registered yet today.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><span><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> Recent Attendance Log</span></div>
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for r in recent_punches %}
+          <tr>
+            <td><strong>{{ r.employee.full_name }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ r.employee.department.name }}</div></td>
+            <td>{{ r.date|date:'M d, Y' }}</td>
+            <td>{{ r.clock_in|time:'H:i'|default:'-' }}</td>
+            <td>{{ r.clock_out|time:'H:i'|default:'-' }}</td>
+            <td><strong>{{ r.total_work_hours }} hrs</strong></td>
+            <td>{{ r.status|status_badge }}</td>
+            <td><a href="{% url 'attendance:regularize' r.id %}" class="btn btn-outline btn-sm">Regularize</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 1.5rem;">No recent attendance punches.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

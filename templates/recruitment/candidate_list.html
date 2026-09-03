@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+{% block title %}Candidate Talent Pool{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Candidate Directory & Talent Pool</h1>
+    <div class="breadcrumbs">Search and evaluate active applicants, sourced prospects, and referred candidates.</div>
+  </div>
+  <a href="{% url 'recruitment:candidate_create' %}" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add Candidate</a>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Candidate Name</th><th>Email / Phone</th><th>Current Role & Org</th><th>Experience</th><th>Expected CTC</th><th>Source</th></tr></thead>
+        <tbody>
+          {% for c in candidates %}
+          <tr>
+            <td><a href="{% url 'recruitment:candidate_detail' c.id %}" style="font-weight: 600; color: #2563eb;">{{ c.full_name }}</a></td>
+            <td><div>{{ c.email }}</div><div style="font-size: 0.75rem; color: #64748b;">{{ c.phone }}</div></td>
+            <td><div>{{ c.current_designation|default:'-' }}</div><div style="font-size: 0.75rem; color: #64748b;">{{ c.current_company|default:'-' }}</div></td>
+            <td>{{ c.total_experience_years }} yrs</td>
+            <td><strong>${{ c.expected_ctc }}</strong></td>
+            <td><span class="badge badge-secondary">{{ c.get_source_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 2rem;">No candidate profiles found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}{{ candidate.full_name }} - Profile{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ candidate.full_name }}</h1>
+    <div class="breadcrumbs">{{ candidate.email }} • {{ candidate.phone }} • {{ candidate.total_experience_years }} Years Experience</div>
+  </div>
+  <a href="{% url 'recruitment:candidate_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Pool</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-user-tie me-2 text-primary"></i> Candidate Overview</span></div>
+    <div class="card-body">
+      <table class="table">
+        <tr><td style="font-weight: 600; width: 35%;">Current Company</td><td>{{ candidate.current_company|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Current Role</td><td>{{ candidate.current_designation|default:'-' }}</td></tr>
+        <tr><td style="font-weight: 600;">Current CTC</td><td>${{ candidate.current_ctc }}</td></tr>
+        <tr><td style="font-weight: 600;">Expected CTC</td><td><strong>${{ candidate.expected_ctc }}</strong></td></tr>
+        <tr><td style="font-weight: 600;">Notice Period</td><td>{{ candidate.notice_period_days }} days</td></tr>
+        <tr><td style="font-weight: 600;">Application Source</td><td><span class="badge badge-secondary">{{ candidate.get_source_display }}</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-folder-open me-2 text-primary"></i> Associated Job Applications</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Requisition</th><th>Stage</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for a in applications %}
+          <tr>
+            <td><a href="{% url 'recruitment:requisition_detail' a.requisition.id %}" style="font-weight: 600;">{{ a.requisition.title }}</a></td>
+            <td><span class="badge badge-primary">{{ a.current_stage.name|default:'Applied' }}</span></td>
+            <td>{{ a.status|status_badge }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 1.5rem;">No active applications linked.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

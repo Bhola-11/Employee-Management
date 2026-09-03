@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}{{ requisition.title }} - ATS Pipeline{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ requisition.title }} (<code>{{ requisition.code }}</code>)</h1>
+    <div class="breadcrumbs">{{ requisition.department.name }} • {{ requisition.branch.name }} • {{ requisition.number_of_openings }} Openings • {{ requisition.status|status_badge }}</div>
+  </div>
+  <a href="{% url 'recruitment:requisition_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Requisitions</a>
+</div>
+
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div class="card-header"><span><i class="fa-solid fa-kanban me-2 text-primary"></i> Recruitment Stage Pipeline</span></div>
+  <div class="card-body" style="overflow-x: auto; padding: 1.5rem;">
+    <div style="display: flex; gap: 1rem; min-width: 900px;">
+      {% for stage, apps in pipeline.items %}
+      <div style="flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; min-width: 220px;">
+        <div style="font-weight: 700; font-size: 0.9rem; color: #1e293b; margin-bottom: 0.75rem; display: flex; justify-content: space-between;">
+          <span>{{ stage.name }}</span>
+          <span class="badge badge-secondary">{{ apps|length }}</span>
+        </div>
+        <div>
+          {% for app in apps %}
+          <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.75rem; margin-bottom: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <div style="font-weight: 600; font-size: 0.85rem;"><a href="{% url 'recruitment:candidate_detail' app.candidate.id %}">{{ app.candidate.full_name }}</a></div>
+            <div style="font-size: 0.75rem; color: #64748b;">{{ app.candidate.current_company|default:'Independent' }}</div>
+            <div style="font-size: 0.75rem; margin-top: 0.25rem;">Exp: {{ app.candidate.total_experience_years }} yrs</div>
+          </div>
+          {% empty %}
+          <div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 1rem 0;">No candidates in this stage</div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

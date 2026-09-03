@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Leave & Time Off{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Leave & Paid Time Off (PTO)</h1>
+    <div class="breadcrumbs">Employee quota balances, leave applications, manager approvals, and carry-forward rules.</div>
+  </div>
+  <a href="{% url 'leave_management:apply' %}" class="btn btn-primary"><i class="fa-solid fa-plane-departure"></i> Apply for Leave</a>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+  {% for b in balances %}
+  <div class="card" style="border-left: 4px solid {{ b.leave_type.color_hex }};">
+    <div class="card-body" style="padding: 1.25rem;">
+      <div style="font-size: 0.85rem; font-weight: 600; color: #64748b;">{{ b.leave_type.name }}</div>
+      <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0;">{{ b.total_available }} <span style="font-size: 0.9rem; font-weight: 500; color: #64748b;">days</span></div>
+      <div style="font-size: 0.75rem; color: #94a3b8;">Allocated: {{ b.allocated_days }} • Used: {{ b.used_days }}</div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="card" style="grid-column: 1 / -1;"><div class="card-body"><p style="color: #64748b; margin: 0;">No leave balances currently allocated for this year.</p></div></div>
+  {% endfor %}
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> My Leave Applications</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Type</th><th>Duration</th><th>Days</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for app in my_applications %}
+          <tr>
+            <td><strong>{{ app.leave_type.name }}</strong></td>
+            <td>{{ app.start_date|date:'M d' }} - {{ app.end_date|date:'M d' }}</td>
+            <td><span class="badge badge-secondary">{{ app.number_of_days }}d</span></td>
+            <td>{{ app.status|status_badge }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No recent leave requests.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-inbox me-2 text-primary"></i> Pending Approvals (Manager)</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Dates</th><th>Type</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for p in pending_approvals %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ p.employee.full_name }}</strong></td>
+            <td>{{ p.start_date|date:'M d' }} - {{ p.end_date|date:'M d' }}</td>
+            <td>{{ p.leave_type.name }} ({{ p.number_of_days }}d)</td>
+            <td><a href="{% url 'leave_management:approve' p.id %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Approve</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No pending approvals in queue.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
