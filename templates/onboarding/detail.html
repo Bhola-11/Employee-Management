@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% block title %}Onboarding: {{ onboarding.employee.full_name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Onboarding Tasks: {{ onboarding.employee.full_name }}</h1>
+    <div class="breadcrumbs">Joined: {{ onboarding.start_date|date:'M d, Y' }} • Target: {{ onboarding.target_completion_date|date:'M d, Y' }} • Buddy: {{ onboarding.buddy.full_name|default:'Unassigned' }}</div>
+  </div>
+  <a href="{% url 'onboarding:dashboard' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span><i class="fa-solid fa-list-check me-2 text-primary"></i> Onboarding Checklist ({{ onboarding.completion_percentage }}% Complete)</span>
+  </div>
+  <div class="card-body" style="padding: 0;">
+    <table class="table">
+      <thead><tr><th>Task Title</th><th>Category</th><th>Due Date</th><th>Status</th><th>Toggle</th></tr></thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td><strong style="{% if task.status == 'COMPLETED' %}text-decoration: line-through; color: #94a3b8;{% endif %}">{{ task.title }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ task.description }}</div></td>
+          <td><span class="badge badge-secondary">{{ task.category }}</span></td>
+          <td>{{ task.due_date|date:'M d, Y' }}</td>
+          <td>{% if task.status == 'COMPLETED' %}<span class="badge badge-success">Completed</span>{% else %}<span class="badge badge-warning">Pending</span>{% endif %}</td>
+          <td>
+            <a href="{% url 'onboarding:task_toggle' task.id %}" class="btn {% if task.status == 'COMPLETED' %}btn-secondary{% else %}btn-primary{% endif %} btn-sm">
+              {% if task.status == 'COMPLETED' %}<i class="fa-solid fa-rotate-left"></i> Reopen{% else %}<i class="fa-solid fa-check"></i> Complete{% endif %}
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">No tasks populated for this onboarding.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

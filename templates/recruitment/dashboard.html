@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Recruitment & ATS Hub{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Talent Acquisition & ATS Pipeline</h1>
+    <div class="breadcrumbs">Job requisitions, candidate pipeline health, interview scheduling, and offer analytics.</div>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{% url 'recruitment:requisition_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Post Job Opening</a>
+    <a href="{% url 'recruitment:candidate_create' %}" class="btn btn-outline"><i class="fa-solid fa-user-plus"></i> Add Candidate</a>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-icon blue"><i class="fa-solid fa-briefcase"></i></div><div><div class="metric-value">{{ metrics.total_open_positions|default:0 }}</div><div class="metric-label">Open Requisitions</div></div></div>
+  <div class="metric-card"><div class="metric-icon purple"><i class="fa-solid fa-users"></i></div><div><div class="metric-value">{{ metrics.total_candidates|default:0 }}</div><div class="metric-label">Talent Pool Candidates</div></div></div>
+  <div class="metric-card"><div class="metric-icon yellow"><i class="fa-solid fa-filter"></i></div><div><div class="metric-value">{{ metrics.active_applications|default:0 }}</div><div class="metric-label">Active Applications</div></div></div>
+  <div class="metric-card"><div class="metric-icon green"><i class="fa-solid fa-user-check"></i></div><div><div class="metric-value">{{ metrics.hired_count|default:0 }}</div><div class="metric-label">Hired This Quarter</div></div></div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-list-check me-2 text-primary"></i> Active Job Openings</span><a href="{% url 'recruitment:requisition_list' %}" class="btn btn-outline btn-sm">View All</a></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Position Title</th><th>Department</th><th>Openings</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for req in requisitions %}
+          <tr>
+            <td><a href="{% url 'recruitment:requisition_detail' req.id %}" style="font-weight: 600;">{{ req.title }}</a><div style="font-size: 0.75rem; color: #64748b;">{{ req.code }}</div></td>
+            <td>{{ req.department.name|default:'General' }}</td>
+            <td><span class="badge badge-primary">{{ req.number_of_openings }} slots</span></td>
+            <td>{{ req.status|status_badge }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No active job requisitions.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-user-clock me-2 text-primary"></i> Upcoming Interviews</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Candidate</th><th>Round</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for iv in upcoming_interviews %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ iv.application.candidate.full_name }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ iv.application.requisition.title }}</div></td>
+            <td>{{ iv.title }}</td>
+            <td style="font-size: 0.8rem;">{{ iv.scheduled_start|date:'M d, H:i' }}</td>
+            <td>{{ iv.status|status_badge }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No upcoming interviews scheduled.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

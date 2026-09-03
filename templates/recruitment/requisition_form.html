@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ title }}</h1>
+    <div class="breadcrumbs">Define role scope, headcount requirements, compensation bands, and target timeline.</div>
+  </div>
+  <a href="{% url 'recruitment:requisition_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Requisitions</a>
+</div>
+
+<div class="card" style="max-width: 900px;">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid-2">
+        {% for field in form %}
+        <div class="form-group" {% if field.name in 'description,requirements,benefits' %}style="grid-column: span 2;"{% endif %}>
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">{{ field.errors|striptags }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Job Requisition</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

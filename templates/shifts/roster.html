@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Shift Rosters & Patterns{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Shift Rosters & Working Patterns</h1>
+    <div class="breadcrumbs">Manage 24/7 rotational schedules, weekly off days, and shift patterns.</div>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{% url 'shifts:type_create' %}" class="btn btn-outline"><i class="fa-solid fa-plus"></i> Add Shift Pattern</a>
+    <a href="{% url 'shifts:assign' %}" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> Assign Shift</a>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-bottom: 1.5rem;">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-business-time me-2 text-primary"></i> Configured Shift Types</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Shift Name</th><th>Timing</th><th>Grace</th><th>Night</th></tr></thead>
+        <tbody>
+          {% for st in shift_types %}
+          <tr>
+            <td><strong>{{ st.name }}</strong> (<code>{{ st.code }}</code>)</td>
+            <td>{{ st.start_time|time:'H:i' }} - {{ st.end_time|time:'H:i' }}</td>
+            <td>{{ st.grace_period_minutes }}m</td>
+            <td>{% if st.is_night_shift %}<span class="badge badge-primary">Night</span>{% else %}Day{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No shift patterns configured.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-calendar-days me-2 text-primary"></i> Roster Assignments</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Date</th><th>Shift</th></tr></thead>
+        <tbody>
+          {% for r in rosters %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ r.employee.full_name }}</strong></td>
+            <td>{{ r.date|date:'M d, Y' }}</td>
+            <td>{% if r.is_weekly_off %}<span class="badge badge-secondary">Weekly Off</span>{% else %}<span class="badge badge-primary">{{ r.shift_type.name }}</span>{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 1.5rem;">No roster assignments found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
