@@ -1,0 +1,64 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Performance & OKRs{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Performance Management & OKRs</h1>
+    <div class="breadcrumbs">Goal alignments, key result progress tracking, review cycles, and annual appraisals.</div>
+  </div>
+  <a href="{% url 'performance:goal_create' %}" class="btn btn-primary"><i class="fa-solid fa-bullseye"></i> Set OKR Goal</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-bullseye me-2 text-primary"></i> My Active Goals & OKRs</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Objective Title</th><th>Target Date</th><th>Progress</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for g in my_goals %}
+          <tr>
+            <td><strong>{{ g.title }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ g.category }}</div></td>
+            <td>{{ g.target_date|date:'M d, Y' }}</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                  <div style="width: {{ g.progress_percentage }}%; height: 100%; background: #10b981;"></div>
+                </div>
+                <span style="font-size: 0.75rem; font-weight: 600;">{{ g.progress_percentage }}%</span>
+              </div>
+            </td>
+            <td><span class="badge badge-secondary">{{ g.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No active goals established.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-award me-2 text-primary"></i> Performance Appraisal Reviews</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Cycle</th><th>Status</th><th>Self Rating</th><th>Manager Rating</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for a in my_appraisals %}
+          <tr>
+            <td><strong>{{ a.cycle.name }}</strong></td>
+            <td>{{ a.status|status_badge }}</td>
+            <td>{{ a.self_rating|default:'Pending' }}/5</td>
+            <td>{{ a.manager_rating|default:'Pending' }}/5</td>
+            <td><a href="{% url 'performance:self_appraisal' a.id %}" class="btn btn-outline btn-sm">Review</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">No active appraisal reviews assigned.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}HR & IT Helpdesk{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Internal HR & IT Helpdesk</h1>
+    <div class="breadcrumbs">Submit inquiry tickets, report hardware issues, query payroll questions, and track SLA response times.</div>
+  </div>
+  <a href="{% url 'helpdesk:create' %}" class="btn btn-primary"><i class="fa-solid fa-headset"></i> Raise Support Ticket</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-ticket me-2 text-primary"></i> My Submitted Tickets</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Ticket #</th><th>Subject</th><th>Priority</th><th>Status</th><th>View</th></tr></thead>
+        <tbody>
+          {% for t in my_tickets %}
+          <tr>
+            <td><code>{{ t.ticket_number }}</code></td>
+            <td><strong>{{ t.subject }}</strong></td>
+            <td><span class="badge badge-secondary">{{ t.priority }}</span></td>
+            <td>{{ t.status|status_badge }}</td>
+            <td><a href="{% url 'helpdesk:ticket_detail' t.id %}" class="btn btn-outline btn-sm">Thread</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">You have no open support tickets.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-inbox me-2 text-primary"></i> Active Organization Tickets</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Ticket #</th><th>Employee</th><th>Category</th><th>Assigned</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for tk in all_tickets %}
+          <tr>
+            <td><code>{{ tk.ticket_number }}</code></td>
+            <td><strong style="color: #2563eb;">{{ tk.employee.full_name }}</strong></td>
+            <td>{{ tk.category.name }}</td>
+            <td>{{ tk.assigned_to.full_name|default:'Unassigned' }}</td>
+            <td>{{ tk.status|status_badge }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">No tickets in queue.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
