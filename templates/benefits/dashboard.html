@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block title %}Benefits & Health Plans{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Benefits Administration & Insurance</h1>
+    <div class="breadcrumbs">Corporate health coverage, retirement matching, dental/vision, and wellness stipends.</div>
+  </div>
+  <a href="{% url 'benefits:enroll' %}" class="btn btn-primary"><i class="fa-solid fa-heart-pulse"></i> Enroll in Plan</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-shield-heart me-2 text-primary"></i> Available Benefit Plans</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Plan Name</th><th>Provider</th><th>Company Share</th><th>Employee Share</th></tr></thead>
+        <tbody>
+          {% for p in plans %}
+          <tr>
+            <td><strong>{{ p.name }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ p.get_category_display }}</div></td>
+            <td>{{ p.provider_name }}</td>
+            <td><strong style="color: #10b981;">${{ p.employer_monthly_contribution }}/mo</strong></td>
+            <td>${{ p.employee_monthly_contribution }}/mo</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No corporate benefit plans registered.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-user-shield me-2 text-primary"></i> My Active Enrollments</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Enrolled Plan</th><th>Date</th><th>Nominee</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for e in my_enrollments %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ e.plan.name }}</strong></td>
+            <td>{{ e.enrolled_date|date:'M d, Y' }}</td>
+            <td>{{ e.nominee_name|default:'Self' }}</td>
+            <td><span class="badge badge-success">{{ e.status }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">You are not enrolled in any benefit plans.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

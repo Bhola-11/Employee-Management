@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}{{ run.name }} - Payroll Breakdown{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ run.name }}</h1>
+    <div class="breadcrumbs">Executed: {{ run.run_date|date:'M d, Y' }} • Headcount: {{ run.total_employees_count }} • Status: {{ run.status|status_badge }}</div>
+  </div>
+  <a href="{% url 'payroll:dashboard' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Payroll</a>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-icon blue"><i class="fa-solid fa-wallet"></i></div><div><div class="metric-value">${{ run.total_gross_pay }}</div><div class="metric-label">Total Gross Earnings</div></div></div>
+  <div class="metric-card"><div class="metric-icon red"><i class="fa-solid fa-receipt"></i></div><div><div class="metric-value">${{ run.total_deductions }}</div><div class="metric-label">Tax & PF Deductions</div></div></div>
+  <div class="metric-card"><div class="metric-icon green"><i class="fa-solid fa-money-check-dollar"></i></div><div><div class="metric-value">${{ run.total_net_pay }}</div><div class="metric-label">Net Disbursed Amount</div></div></div>
+</div>
+
+<div class="card">
+  <div class="card-header"><span><i class="fa-solid fa-users me-2 text-primary"></i> Generated Employee Payslips</span></div>
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Department</th><th>Basic</th><th>HRA</th><th>Gross</th><th>Deductions</th><th>Net Pay</th><th>View</th></tr></thead>
+        <tbody>
+          {% for ps in payslips %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ ps.employee.full_name }}</strong><div style="font-size: 0.75rem; color: #64748b;">{{ ps.employee.employee_id }}</div></td>
+            <td>{{ ps.employee.department.name }}</td>
+            <td>${{ ps.basic_salary }}</td>
+            <td>${{ ps.house_rent_allowance }}</td>
+            <td><strong>${{ ps.gross_earnings }}</strong></td>
+            <td style="color: #ef4444;">-${{ ps.total_deductions }}</td>
+            <td><strong style="color: #10b981; font-size: 1rem;">${{ ps.net_salary }}</strong></td>
+            <td><a href="{% url 'payroll:payslip_detail' ps.id %}" class="btn btn-outline btn-sm">Payslip</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="8" style="text-align: center; color: #64748b; padding: 2rem;">No payslips generated for this run.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

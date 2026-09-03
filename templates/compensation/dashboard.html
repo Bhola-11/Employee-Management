@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% block title %}Compensation & Salary Bands{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Compensation Architecture & Salary Bands</h1>
+    <div class="breadcrumbs">Enterprise pay parity, salary bands (L1-L6), allowances, and formula components.</div>
+  </div>
+  <a href="{% url 'compensation:band_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Salary Band</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-layer-group me-2 text-primary"></i> Configured Salary Bands</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Band Name</th><th>Level</th><th>Min Base</th><th>Midpoint</th><th>Max Base</th></tr></thead>
+        <tbody>
+          {% for b in bands %}
+          <tr>
+            <td><strong>{{ b.name }}</strong> (<code>{{ b.code }}</code>)</td>
+            <td><span class="badge badge-primary">L{{ b.job_level.rank_order }}</span></td>
+            <td>${{ b.min_base_salary }}</td>
+            <td><strong>${{ b.mid_base_salary }}</strong></td>
+            <td>${{ b.max_base_salary }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">No salary bands configured.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-calculator me-2 text-primary"></i> Salary Components</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Component</th><th>Type</th><th>Calculation</th><th>Taxable</th></tr></thead>
+        <tbody>
+          {% for c in components %}
+          <tr>
+            <td><strong>{{ c.name }}</strong> (<code>{{ c.code }}</code>)</td>
+            <td>{% if c.component_type == 'EARNING' %}<span class="badge badge-success">Earning</span>{% else %}<span class="badge badge-danger">Deduction</span>{% endif %}</td>
+            <td>{{ c.get_calculation_type_display }}</td>
+            <td>{% if c.is_taxable %}<span class="badge badge-primary">Yes</span>{% else %}Exempt{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No custom components configured.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
