@@ -1,49 +1,147 @@
 {% extends 'base/base.html' %}
-{% block title %}Sign In{% endblock %}
+{% load static %}
+{% block title %}Enterprise Sign In{% endblock %}
+
 {% block auth_content %}
-<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 90%); padding: 1.5rem;">
-  <div style="width: 100%; max-width: 440px; background: #ffffff; border-radius: 12px; padding: 2.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; margin-bottom: 0.75rem;">
-        <i class="fa-solid fa-cube"></i>
+<div class="auth-wrapper">
+  <!-- Left Column: Hero Branding Showcase -->
+  <div class="auth-hero">
+    <div>
+      <div class="auth-hero-brand">
+        <div class="sidebar-logo" style="width: 48px; height: 48px; font-size: 1.4rem;">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.35rem; font-weight: 800; color: #ffffff; line-height: 1.1;">WorkSphere</h3>
+          <small style="color: #94a3b8; font-size: 0.75rem; font-weight: 600;">Enterprise HRMS & Workforce Platform</small>
+        </div>
       </div>
-      <h2 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">WorkSphere GENT</h2>
-      <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">One Platform for Every Workforce</p>
+
+      <div class="auth-hero-title">
+        One Platform for Every Workforce.
+      </div>
+      <p class="auth-hero-subtitle">
+        Empower your global enterprise with seamless recruitment, biometric attendance, automated payroll, 360&deg; performance reviews, and compliance governance.
+      </p>
+
+      <div class="auth-feature-list">
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <span><strong>13-Role RBAC</strong> &bull; Granular Multi-Tenant Security Matrix</span>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon"><i class="fa-solid fa-fingerprint"></i></div>
+          <span><strong>Smart Attendance</strong> &bull; Biometric & Geo-IP Desk</span>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon"><i class="fa-solid fa-money-check-dollar"></i></div>
+          <span><strong>Payroll Engine</strong> &bull; Salary Bands & Masked Payslips</span>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <span><strong>Executive Intelligence</strong> &bull; OKRs, 9-Box & Analytics</span>
+        </div>
+      </div>
     </div>
 
-    <form method="post" action="{% url 'accounts:login' %}">
+    <div class="auth-hero-footer">
+      <span><i class="fa-solid fa-lock me-1"></i> 256-Bit SSL Encrypted</span>
+      <span>v1.0.0-Enterprise</span>
+    </div>
+  </div>
+
+  <!-- Right Column: Authentication Card -->
+  <div class="auth-form-card">
+    <div class="auth-header">
+      <h2>Welcome Back</h2>
+      <p>Enter your corporate credentials to access your workspace</p>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem;">
+      <i class="fa-solid fa-triangle-exclamation me-1"></i> {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'accounts:login' %}" id="loginForm">
       {% csrf_token %}
-      {% if form.non_field_errors %}
-      <div style="background-color: #fee2e2; color: #991b1b; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem;">
-        {{ form.non_field_errors }}
-      </div>
-      {% endif %}
 
       <div class="form-group">
-        <label class="form-label" style="color: #1e293b;">Work Email</label>
-        {{ form.email }}
+        <label class="form-label" for="id_email">Work Email</label>
+        <div class="input-icon-group">
+          <input type="email" name="email" id="id_email" class="form-control" placeholder="name@worksphere.io" required autofocus value="{{ form.email.value|default:'' }}">
+          <i class="fa-regular fa-envelope input-icon"></i>
+        </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label" style="color: #1e293b;">Password</label>
-        {{ form.password }}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <label class="form-label" for="id_password" style="margin-bottom: 0;">Password</label>
+        </div>
+        <div class="input-icon-group">
+          <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>
+          <i class="fa-solid fa-lock input-icon"></i>
+          <button type="button" class="password-toggle-btn" id="passwordToggle" aria-label="Toggle password visibility">
+            <i class="fa-regular fa-eye" id="passwordIcon"></i>
+          </button>
+        </div>
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 0.85rem;">
-        <label style="display: flex; align-items: center; gap: 0.5rem; color: #475569;">
-          {{ form.remember_me }} Remember this device
+        <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); cursor: pointer;">
+          <input type="checkbox" name="remember_me" id="id_remember_me" style="width: auto; margin: 0;">
+          Remember this device
         </label>
       </div>
 
-      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
-        <i class="fa-solid fa-lock"></i> Sign In to WorkSphere
+      <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px; font-size: 0.95rem; border-radius: 10px; font-weight: 700; gap: 0.65rem;">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to WorkSphere
       </button>
     </form>
 
-    <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; font-size: 0.775rem; color: #64748b; text-align: center;">
-      Protected by Enterprise RBAC & Comprehensive Audit Logging.<br>
-      WorkSphere Platform v1.0.0-Enterprise
+    <!-- Quick Demo Accounts One-Click Fill -->
+    <div class="quick-demo-section">
+      <div class="quick-demo-title">
+        <i class="fa-solid fa-bolt text-warning"></i> Quick Demo Sign-In (Click to Fill)
+      </div>
+      <div class="quick-demo-buttons">
+        <button type="button" class="quick-demo-btn" onclick="fillDemo('superadmin@worksphere.io', 'Admin@12345')">
+          <i class="fa-solid fa-crown"></i> Super Admin
+        </button>
+        <button type="button" class="quick-demo-btn" onclick="fillDemo('hrmanager@worksphere.io', 'Admin@12345')">
+          <i class="fa-solid fa-user-tie"></i> HR Manager
+        </button>
+        <button type="button" class="quick-demo-btn" onclick="fillDemo('orgadmin@worksphere.io', 'Admin@12345')">
+          <i class="fa-solid fa-building-user"></i> Org Admin
+        </button>
+        <button type="button" class="quick-demo-btn" onclick="fillDemo('employee@worksphere.io', 'Admin@12345')">
+          <i class="fa-solid fa-user"></i> Employee
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+  function fillDemo(email, password) {
+    document.getElementById('id_email').value = email;
+    document.getElementById('id_password').value = password;
+    const btn = document.querySelector('button[type="submit"]');
+    btn.style.transform = 'scale(0.98)';
+    setTimeout(() => btn.style.transform = '', 150);
+  }
+
+  const passwordToggle = document.getElementById('passwordToggle');
+  const passwordInput = document.getElementById('id_password');
+  const passwordIcon = document.getElementById('passwordIcon');
+
+  if (passwordToggle && passwordInput && passwordIcon) {
+    passwordToggle.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      passwordIcon.classList.toggle('fa-eye');
+      passwordIcon.classList.toggle('fa-eye-slash');
+    });
+  }
+</script>
 {% endblock %}
