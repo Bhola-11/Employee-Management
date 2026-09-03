@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Expense Claims & Receipts{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Corporate Expense Management</h1>
+    <div class="breadcrumbs">Submit travel & business claims, attach receipts, and process reimbursement audits.</div>
+  </div>
+  <a href="{% url 'expenses:claim_create' %}" class="btn btn-primary"><i class="fa-solid fa-receipt"></i> File Expense Claim</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-folder-open me-2 text-primary"></i> My Expense Claims</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Claim #</th><th>Title</th><th>Total</th><th>Status</th><th>View</th></tr></thead>
+        <tbody>
+          {% for c in my_claims %}
+          <tr>
+            <td><code>{{ c.claim_number }}</code></td>
+            <td><a href="{% url 'expenses:claim_detail' c.id %}" style="font-weight: 600;">{{ c.title }}</a></td>
+            <td><strong>${{ c.total_amount }}</strong></td>
+            <td>{{ c.status|status_badge }}</td>
+            <td><a href="{% url 'expenses:claim_detail' c.id %}" class="btn btn-outline btn-sm">Items</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">No expense claims submitted.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-inbox me-2 text-primary"></i> Pending Finance Approvals</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Employee</th><th>Claim Title</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for p in pending_approvals %}
+          <tr>
+            <td><strong style="color: #2563eb;">{{ p.employee.full_name }}</strong></td>
+            <td>{{ p.title }}</td>
+            <td><strong>${{ p.total_amount }}</strong></td>
+            <td><a href="{% url 'expenses:approve_claim' p.id %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Reimburse</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No claims pending reimbursement approval.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

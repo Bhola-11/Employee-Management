@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Corporate Travel Desk{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Corporate Travel Requisitions</h1>
+    <div class="breadcrumbs">Employee flight/hotel travel requests, itineraries, booking approvals, and advance allowances.</div>
+  </div>
+  <a href="{% url 'travel:create' %}" class="btn btn-primary"><i class="fa-solid fa-plane"></i> Book Travel Request</a>
+</div>
+
+<div class="card">
+  <div class="card-header"><span><i class="fa-solid fa-route me-2 text-primary"></i> Travel Requisitions</span></div>
+  <div class="card-body" style="padding: 0;">
+    <div class="table-responsive">
+      <table class="table">
+        <thead><tr><th>Req #</th><th>Employee</th><th>Route</th><th>Dates</th><th>Estimated Budget</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for t in all_travels %}
+          <tr>
+            <td><code>{{ t.requisition_number }}</code></td>
+            <td><strong style="color: #2563eb;">{{ t.employee.full_name }}</strong></td>
+            <td>{{ t.origin_city }} <i class="fa-solid fa-arrow-right text-primary"></i> {{ t.destination_city }}</td>
+            <td>{{ t.departure_date|date:'M d' }} - {{ t.return_date|date:'M d, Y' }}</td>
+            <td><strong>${{ t.estimated_budget }}</strong></td>
+            <td>{{ t.status|status_badge }}</td>
+            <td>
+              {% if t.status == 'PENDING_MANAGER' %}
+              <a href="{% url 'travel:approve' t.id %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Approve</a>
+              {% else %}
+              <span style="font-size: 0.8rem; color: #10b981;">{{ t.booking_reference|default:'Confirmed' }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 2rem;">No travel requisitions submitted.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

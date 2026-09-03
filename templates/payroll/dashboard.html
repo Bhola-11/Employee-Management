@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+{% load core_tags %}
+{% block title %}Payroll Engine & Runs{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Payroll Engine & Salary Processing</h1>
+    <div class="breadcrumbs">Monthly payroll execution, tax withholdings, direct deposit batches, and employee payslips.</div>
+  </div>
+  <a href="{% url 'payroll:run_create' %}" class="btn btn-primary"><i class="fa-solid fa-play"></i> Execute Payroll Run</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-money-bill-wave me-2 text-primary"></i> Company Payroll Runs</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Run Name</th><th>Period</th><th>Headcount</th><th>Net Disbursed</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for r in payroll_runs %}
+          <tr>
+            <td><a href="{% url 'payroll:run_detail' r.id %}" style="font-weight: 600; color: #2563eb;">{{ r.name }}</a></td>
+            <td>{{ r.month }}/{{ r.year }}</td>
+            <td><span class="badge badge-secondary">{{ r.total_employees_count }} staff</span></td>
+            <td><strong>${{ r.total_net_pay }}</strong></td>
+            <td>{{ r.status|status_badge }}</td>
+            <td><a href="{% url 'payroll:run_detail' r.id %}" class="btn btn-outline btn-sm">Audit Run</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 1.5rem;">No payroll runs executed yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span><i class="fa-solid fa-file-invoice-dollar me-2 text-primary"></i> My Recent Payslips</span></div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table">
+        <thead><tr><th>Payslip #</th><th>Period</th><th>Gross</th><th>Net Pay</th><th>View</th></tr></thead>
+        <tbody>
+          {% for ps in my_payslips %}
+          <tr>
+            <td><strong>{{ ps.payslip_number }}</strong></td>
+            <td>{{ ps.payroll_run.month }}/{{ ps.payroll_run.year }}</td>
+            <td>${{ ps.gross_earnings }}</td>
+            <td><strong style="color: #10b981;">${{ ps.net_salary }}</strong></td>
+            <td><a href="{% url 'payroll:payslip_detail' ps.id %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-eye"></i> Payslip</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 1.5rem;">No payslips generated for your profile.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
