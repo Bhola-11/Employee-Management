@@ -1,0 +1,23 @@
+[[package]]
+name = "django"
+version = "5.0.3"
+description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
+category = "main"
+optional = false
+python-versions = ">=3.10"
+
+[[package]]
+name = "celery"
+version = "5.3.6"
+description = "Distributed Task Queue."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[[package]]
+name = "redis"
+version = "5.0.1"
+description = "Python client for Redis key-value store"
+category = "main"
+optional = false
+python-versions = ">=3.7"

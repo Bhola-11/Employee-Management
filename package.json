@@ -1,0 +1,26 @@
+{
+  "name": "worksphere-enterprise-hrms",
+  "version": "1.0.0",
+  "description": "WorkSphere — Complete Enterprise HR and Workforce Management Platform",
+  "main": "main.py",
+  "scripts": {
+    "start": "python manage.py runserver 0.0.0.0:8000",
+    "dev": "python manage.py runserver",
+    "build": "python manage.py collectstatic --noinput",
+    "migrate": "python manage.py migrate",
+    "seed": "python manage.py seed_hrms_data",
+    "test": "python manage.py test",
+    "worker": "celery -A worksphere worker -l info"
+  },
+  "keywords": [
+    "hrms",
+    "workforce-management",
+    "payroll",
+    "attendance",
+    "enterprise",
+    "django"
+  ],
+  "author": "WorkSphere Engineering Team",
+  "license": "UNLICENSED",
+  "private": true
+}

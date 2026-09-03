@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "~=5.0.3"
+asgiref = ">=3.7.2"
+sqlparse = ">=0.4.4"
+celery = ">=5.3.6"
+redis = ">=5.0.1"
+pillow = ">=10.2.0"
+
+[dev-packages]
+pytest = ">=8.0.2"
+pytest-django = ">=4.8.0"
+coverage = ">=7.4.4"
+
+[requires]
+python_version = "3.12"
