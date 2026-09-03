@@ -66,7 +66,7 @@
             <td>{{ r.clock_out|time:'H:i'|default:'-' }}</td>
             <td><strong>{{ r.total_work_hours }} hrs</strong></td>
             <td>{{ r.status|status_badge }}</td>
-            <td><a href="{% url 'attendance:regularize' r.id %}" class="btn btn-outline btn-sm">Regularize</a></td>
+            <td><a href="{% url 'attendance:regularization_request' r.id %}" class="btn btn-outline btn-sm">Regularize</a></td>
           </tr>
           {% empty %}
           <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 1.5rem;">No recent attendance punches.</td></tr>

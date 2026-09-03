@@ -4,6 +4,7 @@ from . import views
 app_name = 'organizations'
 
 urlpatterns = [
+    path('', views.org_detail_view, name='index'),
     path('profile/', views.org_detail_view, name='detail'),
     path('settings/', views.org_settings_edit_view, name='settings'),
     

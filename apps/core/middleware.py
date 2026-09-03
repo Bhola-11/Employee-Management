@@ -1,5 +1,6 @@
 import threading
 from django.utils.deprecation import MiddlewareMixin
+from apps.organizations.models import Organization
 
 _thread_locals = threading.local()
 
@@ -22,14 +23,19 @@ class TenantMiddleware(MiddlewareMixin):
         if request.user.is_authenticated:
             org_id = request.session.get('active_organization_id')
             if org_id:
-                from apps.organizations.models import Organization
                 try:
                     org = Organization.objects.get(id=org_id, is_active=True)
                 except Organization.DoesNotExist:
                     org = getattr(request.user, 'organization', None)
             else:
                 org = getattr(request.user, 'organization', None)
+                
+        # If user has no explicit org assigned, fallback to primary active org
+        if not org:
+            org = Organization.objects.filter(is_active=True).first()
+            
         request.organization = org
+        request.tenant_org = org
         _thread_locals.organization = org
 
     def process_response(self, request, response):

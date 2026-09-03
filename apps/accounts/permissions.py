@@ -1,12 +1,10 @@
 from functools import wraps
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.contrib import messages
 
 def role_required(*role_codes):
     """
-    Decorator for views that checks if the user has any of the specified role codes.
-    Superusers bypass role checks.
+    Decorator checking role authorization with graceful fallback.
     """
     def decorator(view_func):
         @wraps(view_func)
@@ -17,15 +15,12 @@ def role_required(*role_codes):
                 return view_func(request, *args, **kwargs)
             if request.user.has_role(*role_codes):
                 return view_func(request, *args, **kwargs)
-            messages.error(request, 'Access Denied: You do not possess the required permissions for this action.')
-            raise PermissionDenied
+            messages.warning(request, f"You need {' or '.join(role_codes)} role to access this module.")
+            return redirect('core:dashboard')
         return _wrapped_view
     return decorator
 
 def permission_required(module, action='view'):
-    """
-    Decorator checking fine-grained module-action permissions.
-    """
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
@@ -35,8 +30,8 @@ def permission_required(module, action='view'):
                 return view_func(request, *args, **kwargs)
             if request.user.has_module_perm(module, action):
                 return view_func(request, *args, **kwargs)
-            messages.error(request, f'Access Denied: You lack "{module}:{action}" permission.')
-            raise PermissionDenied
+            messages.warning(request, f"Access restricted for action '{module}:{action}'.")
+            return redirect('core:dashboard')
         return _wrapped_view
     return decorator
 
@@ -50,4 +45,5 @@ class RoleRequiredMixin:
             return super().dispatch(request, *args, **kwargs)
         if request.user.has_role(*self.allowed_roles):
             return super().dispatch(request, *args, **kwargs)
-        raise PermissionDenied
+        messages.warning(request, "Permission required for this action.")
+        return redirect('core:dashboard')

@@ -22,7 +22,7 @@
             <td>{{ des.department.name|default:'Cross-functional' }}</td>
             <td>{% if des.level %}<span class="badge badge-primary">{{ des.level.name }} (Rank {{ des.level.rank }})</span>{% else %}-{% endif %}</td>
             <td>{{ des.is_active|yesno:'Active,Inactive'|status_badge }}</td>
-            <td><a href="{% url 'organizations:designation_update' des.id %}" class="btn btn-outline btn-sm">Edit</a></td>
+            <td><a href="{% url 'organizations:designation_edit' des.id %}" class="btn btn-outline btn-sm">Edit</a></td>
           </tr>
           {% empty %}
           <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 1.5rem;">No designations created yet.</td></tr>

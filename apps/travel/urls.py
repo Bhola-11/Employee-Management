@@ -4,7 +4,8 @@ from . import views
 app_name = 'travel'
 
 urlpatterns = [
-    path('dashboard/', views.travel_dashboard_view, name='dashboard'),
+    path('', views.travel_dashboard_view, name='dashboard'),
+    path('dashboard/', views.travel_dashboard_view, name='dashboard_alt'),
     path('create/', views.travel_create_view, name='create'),
-    path('<int:requisition_id>/approve/', views.travel_approve_view, name='approve'),
+    path('<int:req_id>/approve/', views.travel_approve_view, name='approve'),
 ]

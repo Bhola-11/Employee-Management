@@ -1,3 +1,4 @@
+from apps.accounts.permissions import role_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -107,3 +108,21 @@ def roles_and_permissions_view(request):
     roles = Role.objects.all().prefetch_related('role_permissions__permission')
     permissions = Permission.objects.all()
     return render(request, 'accounts/roles_matrix.html', {'roles': roles, 'permissions': permissions})
+
+@login_required
+@role_required('SUPER_ADMIN', 'ORG_ADMIN')
+def user_edit_view(request, user_id):
+    org = request.organization
+    user_obj = get_object_or_404(User, id=user_id, organization=org)
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST, instance=user_obj, organization=org)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'User {user_obj.email} updated successfully.')
+            return redirect('accounts:user_list')
+    else:
+        form = UserCreationForm(instance=user_obj, organization=org)
+    return render(request, 'accounts/user_form.html', {'form': form, 'title': f'Edit User: {user_obj.email}'})
+
+roles_matrix_view = roles_and_permissions_view
+switch_role_view = switch_active_role_view

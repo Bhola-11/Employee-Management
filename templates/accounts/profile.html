@@ -32,7 +32,7 @@
             <strong>{{ a.role.name }}</strong> (<code>{{ a.role.code }}</code>)
             <div style="font-size: 0.75rem; color: #64748b;">Organization: {{ a.organization.name }}</div>
           </div>
-          {% if a.is_primary %}<span class="badge badge-primary">Primary Role</span>{%{ endif %}
+          {% if a.is_primary %}<span class="badge badge-primary">Primary Role</span>{% endif %}
         </div>
         {% empty %}
         <p style="color: #64748b;">Super Admin account</p>
@@ -49,10 +49,10 @@
             <tr>
               <td><code>{{ s.ip_address }}</code></td>
               <td>{{ s.login_time|date:'M d, Y H:i' }}</td>
-              <td>{u if s.is_active %}<span class="badge badge-success">Active</span>{%{ else %}<span class="badge badge-secondary">Closed</span>{%{ endif %}</td>
+              <td>{% if s.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">Closed</span>{% endif %}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="3" style="text-align: center; color: #64748b;">No past sessions found.</td></tr>
+            <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 1.5rem;">No past sessions found.</td></tr>
             {% endfor %}
           </tbody>
         </table>
